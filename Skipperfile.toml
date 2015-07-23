@@ -1,0 +1,24 @@
+steps = [
+  { name = "assets",  target = "builder" },
+  { name = "package", target = "builder" },
+  { name = "deploy",  target = "deployer" },
+]
+
+
+[actions]
+# Precompile assets
+assets = [
+  ["rm", "-rf", "public/assets"],
+  ["bundle", "install", "--deployment"],
+  ["bundle", "exec", "rake", "assets:precompile"],
+]
+
+# Package is to bundle everything except assets as ready for deploy
+package = [
+  ["bundle", "install", "--deployment", "--without", "assets", "development", "test"],
+]
+
+deploy = [
+  ["ln", "-sf", "$SHARED_PATH", "config/database.yml"],
+  ["touch", "tmp/restart.txt"]
+]
